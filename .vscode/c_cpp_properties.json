@@ -1,0 +1,36 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/chat_server/include",
+                "${workspaceFolder}/chat_server/src",
+                "${workspaceFolder}/chat_client/include",
+                "${workspaceFolder}/chat_client/src",
+                "/usr/include",
+                "/usr/local/include",
+                "/usr/include/libmongoc-1.0",
+                "/usr/include/libbson-1.0"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-gcc-x64",
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "path": [
+                    "${workspaceFolder}/chat_server/include",
+                    "${workspaceFolder}/chat_server/src",
+                    "${workspaceFolder}/chat_client/include",
+                    "${workspaceFolder}/chat_client/src",
+                    "/usr/include",
+                    "/usr/local/include",
+                    "/usr/include/libmongoc-1.0",
+                    "/usr/include/libbson-1.0"
+                ]
+            }
+        }
+    ],
+    "version": 4
+}
