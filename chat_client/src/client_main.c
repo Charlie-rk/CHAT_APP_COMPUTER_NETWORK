@@ -9,33 +9,36 @@
 #include "ui.h"
 #include "file_transfer.h"
 
+
+
 int sockfd;  // Global socket descriptor
 
 int main(int argc, char *argv[]) {
+   printf("\033[2J");  // Clear screen
      const char chat_logo[] =
 
 
-"██████████████████████████████████████████████████████████████████████████████████████████████████████████████████\n\n"
+"██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████\n\n"
 
 
-                       "\t\t  ██████╗██╗  ██╗ █████╗ ████████╗     █████╗ ██████╗ ██████╗ \n"
-                       "\t\t ██╔════╝██║  ██║██╔══██╗╚══██╔══╝    ██╔══██╗██╔══██╗██╔══██╗\n"
-                       "\t\t ██║     ███████║███████║   ██║       ███████║██████╔╝██████╔╝\n"
-                       "\t\t ██║     ██╔══██║██╔══██║   ██║       ██╔══██║██╔═══╝ ██╔═══╝ \n"
-                       "\t\t ╚██████╗██║  ██║██║  ██║   ██║       ██║  ██║██║     ██║     \n"
-                       "\t\t ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝       ╚═╝  ╚═╝╚═╝     ╚═╝     \n"
+                       "\t\t                                  ██████╗██╗  ██╗ █████╗ ████████╗     █████╗ ██████╗ ██████╗ \n"
+                       "\t\t                                 ██╔════╝██║  ██║██╔══██╗╚══██╔══╝    ██╔══██╗██╔══██╗██╔══██╗\n"
+                       "\t\t                                 ██║     ███████║███████║   ██║       ███████║██████╔╝██████╔╝\n"
+                       "\t\t                                 ██║     ██╔══██║██╔══██║   ██║       ██╔══██║██╔═══╝ ██╔═══╝ \n"
+                       "\t\t                                 ╚██████╗██║  ██║██║  ██║   ██║       ██║  ██║██║     ██║     \n"
+                       "\t\t                                 ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝       ╚═╝  ╚═╝╚═╝     ╚═╝     \n"
 
 
-"██████████████████████████████████████████████████████████████████████████████████████████████████████████████████\n";
+"██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████\n";
 
 const char thank[]=
 
-"███╗````````████████╗██╗``██╗███████╗███╗```██╗██╗``██╗██╗```██╗██╗```██╗````````███╗ \n"
-"██╔╝````````╚══██╔══╝██║``██║██╔════╝████╗``██║██║`██╔╝██║```██║██║```██║````````╚██║ \n"
-"██║````````````██║```███████║█████╗``██╔██╗`██║█████╔╝`██║```██║██║```██║`````````██║ \n"
-"██║````````````██║```██╔══██║██╔══╝``██║╚██╗██║██╔═██╗`██║```██║██║```██║`````````██║ \n"
-"███╗```````````██║```██║``██║███████╗██║`╚████║██║``██╗╚██████╔╝╚██████╔╝````````███║ \n"
-"╚══╝```````````╚═╝```╚═╝``╚═╝╚══════╝╚═╝``╚═══╝╚═╝``╚═╝`╚═════╝``╚═════╝`````````╚══╝ \n";
+"                                ███╗````````████████╗██╗``██╗███████╗███╗```██╗██╗``██╗██╗```██╗██╗```██╗````````███╗ \n"
+"                                ██╔╝````````╚══██╔══╝██║``██║██╔════╝████╗``██║██║`██╔╝██║```██║██║```██║````````╚██║ \n"
+"                                ██║````````````██║```███████║█████╗``██╔██╗`██║█████╔╝`██║```██║██║```██║`````````██║ \n"
+"                                ██║````````````██║```██╔══██║██╔══╝``██║╚██╗██║██╔═██╗`██║```██║██║```██║`````````██║ \n"
+"                                ███╗```````````██║```██║``██║███████╗██║`╚████║██║``██╗╚██████╔╝╚██████╔╝````````███║ \n"
+"                                ╚══╝```````````╚═╝```╚═╝``╚═╝╚══════╝╚═╝``╚═══╝╚═╝``╚═╝`╚═════╝``╚═════╝`````````╚══╝ \n";
 
 
 printf("%s",chat_logo);
@@ -80,30 +83,36 @@ printf("%s",chat_logo);
     char buffer[MAX_BUFFER];
     while (1) {
         print_menu();
+    
         if (!fgets(option, sizeof(option), stdin))
             continue;
         int menu_choice = atoi(option);
         if(menu_choice == 1) {  // Broadcast Message
-            printf("Enter message to broadcast: ");
+            printf("   \033[4mEnter message to broadcast:\033[0m ");
             if (!fgets(buffer, sizeof(buffer), stdin))
                 continue;
             buffer[strcspn(buffer, "\n")] = '\0';
             char command[MAX_BUFFER];
             snprintf(command, sizeof(command), "BROADCAST %s\n", buffer);
+            // printf("Debugging :: command %s\n",command);
             write(sockfd, command, strlen(command));
+            sleep(1);
         }
         else if(menu_choice == 2) {  // Private Chat Session (Continuous)
             char recipient[128];
-            printf("Enter recipient user ID to chat with: ");
+            printf("   \033[4mEnter recipient user ID to chat with:\033[0m  ");
             if (!fgets(recipient, sizeof(recipient), stdin))
                 continue;
             recipient[strcspn(recipient, "\n")] = '\0';
             // Retrieve previous chat history.
             snprintf(buffer, sizeof(buffer), "GETCHAT %s\n", recipient);
+            printf("\n\n\033[1;34m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Previous chat history ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \033[0m\n");  // Blue text
+            
             write(sockfd, buffer, strlen(buffer));
+            sleep(1);
             // Enter chat session.
-            printf("=== Chat session with %s ===\n", recipient);
-            printf("Type your messages below. Type \"/exit\" on a new line to leave the chat.\n");
+            printf("\n\n                         \033[1;32m!!!!!!!!!!!!!!!!!!  ~~~~~~~~~     Chat session with %s ~~~~~~~~~  !!!!!!!!!!!!!!!!!!\033[0m\n\n", recipient);
+            printf("                         Type your messages below. \033[1;31mType \033[1m\"/exit\"\033[0m on a new line to leave the chat.\033[0m\n");
             while (1) {
                 char chatMsg[MAX_BUFFER];
                 printf("[%s] >> ", username);
@@ -116,24 +125,30 @@ printf("%s",chat_logo);
                 snprintf(chatCommand, sizeof(chatCommand), "CHAT %s %s\n", recipient, chatMsg);
                 write(sockfd, chatCommand, strlen(chatCommand));
             }
-            printf("Exited chat session with %s.\n", recipient);
+            printf("\033[1;31mExited chat session with %s.\033[0m\n", recipient);
         }
         else if(menu_choice == 3) {  // Retrieve Chat History (Standalone)
             char recipient[128];
-            printf("Enter recipient user ID to retrieve chat history: ");
+            printf("\033[4mEnter recipient user ID to retrieve chat history:\033[0m   ");
             if (!fgets(recipient, sizeof(recipient), stdin))
                 continue;
             recipient[strcspn(recipient, "\n")] = '\0';
             snprintf(buffer, sizeof(buffer), "GETCHAT %s\n", recipient);
+              printf("\n\n\033[1;34m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Previous chat history ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \033[0m\n");  // Blue text
             write(sockfd, buffer, strlen(buffer));
+            sleep(1);
         }
         else if(menu_choice == 4) {  // List Online Users
+          printf("\033[1;32m ***********************     Online Users  ***********************     \033[0m\n"); // Green text
             snprintf(buffer, sizeof(buffer), "LIST\n");
             write(sockfd, buffer, strlen(buffer));
+            sleep(1);
         }
         else if(menu_choice == 5) {  // List All Registered Users
+            printf("\033[1;34m` ***********************   All Registered Users  ***********************    \033[0m\n");  // Blue text
             snprintf(buffer, sizeof(buffer), "ALLUSERS\n");
             write(sockfd, buffer, strlen(buffer));
+            sleep(1);
         }
         else if(menu_choice == 6) {  // File Transfer
             send_file(sockfd);
@@ -141,12 +156,13 @@ printf("%s",chat_logo);
         else if(menu_choice == 7) {  // Logout
             snprintf(buffer, sizeof(buffer), "LOGOUT\n");
             write(sockfd, buffer, strlen(buffer));
-            printf("Logging out...\n");
+            printf("\033[1;34mLogging out...\033[0m\n");
             printf("%s",thank);
             break;
         }
+
         else {
-            printf("Invalid option, try again.\n");
+            printf("\033[1;31mInvalid option, try again.\033[0m\n");
         }
     }
     

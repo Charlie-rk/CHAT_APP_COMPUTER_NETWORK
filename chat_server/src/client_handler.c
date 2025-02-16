@@ -241,6 +241,7 @@ void *client_handler(void *arg) {
             send(newsockfd, "Logging out. Goodbye!\n", 23, 0);
             break;
         }
+        
         else {
             send(newsockfd, "Unknown command.\n", 17, 0);
         }

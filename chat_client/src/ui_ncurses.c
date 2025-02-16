@@ -8,17 +8,19 @@
 
 
 void print_menu() {
-    printf("\n======== Chat Menu ========\n");
-    printf("1. Send Broadcast Message\n");
-    printf("2. Private Chat Session (Continuous)\n");
-    printf("3. Retrieve Chat History\n");
-    printf("4. List Online Users\n");
-    printf("5. List All Registered Users\n");
-    printf("6. Send File\n");
-    printf("7. Logout\n");
-    printf("===========================\n");
-    printf("Enter your choice: ");
+    printf("\n                  \033[1;36m**************** ============= Chat Menu ============= ****************\033[0m\n\n");
+    printf("                                            \033[1;33m 1.\033[0m \033[1;32mSend Broadcast Message\033[0m\n");
+    printf("                                            \033[1;33m 2.\033[0m \033[1;32mPrivate Chat Session (Continuous)\033[0m\n");
+    printf("                                            \033[1;33m 3.\033[0m \033[1;32mRetrieve Chat History\033[0m\n");
+    printf("                                            \033[1;33m 4.\033[0m \033[1;32mList Online Users\033[0m\n");
+    printf("                                            \033[1;33m 5.\033[0m \033[1;32mList All Registered Users\033[0m\n");
+    printf("                                            \033[1;33m 6.\033[0m \033[1;32mSend File\033[0m\n");
+    printf("                                            \033[1;33m 7.\033[0m \033[1;31mLogout\033[0m\n");
+    // printf("8. Video Call\n");
+    printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+    printf("                                            \033[5mEnter your choice:\033[0m ");
 }
+
 
 void authenticate(int sockfd, char *username, size_t username_size) {
     char option[10];
@@ -28,19 +30,20 @@ void authenticate(int sockfd, char *username, size_t username_size) {
     int choice;
     
     while (1) {
-        printf("\n====== Welcome to Chat Client ======\n");
-        printf("1. Register\n");
-        printf("2. Login\n");
-        printf("Enter choice: ");
+        printf("\n              ============================================   \033[1mWelcome to Chat Client\033[0m  ==========================================\n");
+        printf("                                                  1. Register\n");
+        printf("                                                  2. Login\n");
+        printf("                                                  Enter choice: ");
         if (!fgets(option, sizeof(option), stdin))
             continue;
         choice = atoi(option);
+        printf("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`\n");
         if (choice == 1) {
-            printf("Enter desired username: ");
+            printf("            Enter desired username : ");
             if (!fgets(username, username_size, stdin))
                 continue;
             username[strcspn(username, "\n")] = '\0';
-            printf("Enter desired password: ");
+            printf("            Enter desired password : ");
             if (!fgets(password, sizeof(password), stdin))
                 continue;
             password[strcspn(password, "\n")] = '\0';
@@ -49,11 +52,11 @@ void authenticate(int sockfd, char *username, size_t username_size) {
             sleep(2);
             break;  // Assume auto‑login after registration.
         } else if (choice == 2) {
-            printf("Enter user_id: ");
+            printf("            Enter user_id: ");
             if (!fgets(user_id, username_size, stdin))
                 continue;
             user_id[strcspn(user_id, "\n")] = '\0';
-            printf("Enter password: ");
+            printf("            Enter password: ");
             if (!fgets(password, sizeof(password), stdin))
                 continue;
             password[strcspn(password, "\n")] = '\0';
@@ -62,10 +65,10 @@ void authenticate(int sockfd, char *username, size_t username_size) {
             // username=user_id;
             strncpy(username,user_id,username_size-1);
             username[username_size-1]='\0';
-              sleep(3);
+              sleep(2);
             break;
         } else {
-            printf("Invalid choice, try again.\n");
+            printf("---------------------------  Invalid choice, try again. ---------------------------\n");
         }
     }
 }
