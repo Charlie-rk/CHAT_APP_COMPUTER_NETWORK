@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = INADDR_ANY;
     serv_addr.sin_port = htons(portno);
-
+// htons converts the port number from host byte order to network byte order.
     if (bind(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
          perror("Error on binding");
          exit(EXIT_FAILURE);
@@ -57,6 +57,7 @@ int main(int argc, char *argv[]) {
              free(newsockfd_ptr);
              continue;
          }
+        //  printf("here let see ! %d\n",cli_addr);
          create_client_thread(newsockfd_ptr);
     }
 

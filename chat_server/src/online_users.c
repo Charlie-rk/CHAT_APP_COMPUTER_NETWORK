@@ -16,6 +16,7 @@ static OnlineUser *online_users = NULL;
 static pthread_mutex_t online_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void add_online_user(const char *user_id, const char *username, int sockfd) {
+    // printf("Debugging user sockfd while registering %d ",sockfd);
     pthread_mutex_lock(&online_mutex);
     OnlineUser *node = malloc(sizeof(OnlineUser));
     if (node) {

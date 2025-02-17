@@ -10,6 +10,7 @@
 #include "file_transfer.h"
 #include <errno.h>
 #include <sys/time.h>
+#include <stdbool.h>
 
 #define MAX_BUFFER 1024
 
@@ -44,19 +45,22 @@ void *client_handler(void *arg) {
     inet_ntop(AF_INET, &(addr.sin_addr), client_ip, INET_ADDRSTRLEN);
     
     // Send welcome message and command instructions.
-    send(newsockfd,
-         "Welcome to Chat Server!\n"
-         "Commands:\n"
-         "  REGISTER <username> <password>\n"
-         "  LOGIN <username> <password>\n"
-         "  BROADCAST <message>\n"
-         "  MSG <recipient_user_id> <message>\n"
-         "  CHAT <recipient_user_id> <message>\n"
-         "  GETCHAT <recipient_user_id>\n"
-         "  LIST\n"
-         "  ALLUSERS\n"
-         "  FILE <recipient_user_id> <filename> <filesize>\n"
-         "  LOGOUT\n", 350, 0);
+    printf("Sending\n");
+  send(newsockfd,
+     "\033[1;32mWelcome to Chat Server!\033[0m\n"              // Bold Green
+     "\033[1;34mCommands:\033[0m\n"                             // Bold Blue
+     "  \033[1;33mREGISTER\033[0m <username> <password>\n"       // Bold Yellow
+     "  \033[1;33mLOGIN\033[0m <username> <password>\n"
+     "  \033[1;33mBROADCAST\033[0m <message>\n"
+     "  \033[1;33mMSG\033[0m <recipient_user_id> <message>\n"
+     "  \033[1;33mCHAT\033[0m <recipient_user_id> <message>\n"
+     "  \033[1;33mGETCHAT\033[0m <recipient_user_id>\n"
+     "  \033[1;33mLIST\033[0m\n"
+     "  \033[1;33mALLUSERS\033[0m\n"
+     "  \033[1;33mFILE\033[0m <recipient_user_id> <filename> <filesize>\n"
+     "  \033[1;33mLOGOUT\033[0m\n", 
+     350, 0);
+
     
     while (1) {
         memset(buffer, 0, MAX_BUFFER);
@@ -131,7 +135,11 @@ void *client_handler(void *arg) {
                 continue;
             }
             broadcast_message(username, msg);
-            send(newsockfd, "Broadcast sent.\n", 16, 0);
+send(newsockfd,
+     "\033[1;32mBroadcast sent.\033[0m\n",
+     strlen("\033[1;32mBroadcast sent.\033[0m\n"),
+     0);
+
         }
         else if (strcasecmp(command, "MSG") == 0) {
             if (strlen(user_id) == 0) {
@@ -164,7 +172,10 @@ void *client_handler(void *arg) {
                 snprintf(full_msg, sizeof(full_msg), "[Private from %s]: %s\n", username, msg);
                 send(recipient_sock, full_msg, strlen(full_msg), 0);
             }
-            send(newsockfd, "Message sent.\n", 14, 0);
+            send(newsockfd,
+     "\033[1;32mMessage sent.\033[0m\n",
+     strlen("\033[1;32mMessage sent.\033[0m\n"),
+     0);
         }
         else if (strcasecmp(command, "CHAT") == 0) {
             if (strlen(user_id) == 0) {
@@ -189,7 +200,10 @@ void *client_handler(void *arg) {
                 snprintf(full_msg, sizeof(full_msg), "[Private from %s]: %s\n", username, msg);
                 send(recipient_sock, full_msg, strlen(full_msg), 0);
             }
-            send(newsockfd, "Message sent.\n", 14, 0);
+                send(newsockfd,
+     "\033[1;32mMessage sent.\033[0m\n",
+     strlen("\033[1;32mMessage sent.\033[0m\n"),
+     0);
         }
         else if (strcasecmp(command, "GETCHAT") == 0) {
             char *other_id = strtok(NULL, " ");
@@ -207,7 +221,7 @@ void *client_handler(void *arg) {
         }
         else if (strcasecmp(command, "LIST") == 0) {
             // Implementation for listing online users.
-            // (You can call functions from online_users.c to generate the list.)
+           
                  if (strlen(user_id) == 0) {
                     send(newsockfd, "Please login first.\n", 21, 0);
                   continue;
@@ -219,7 +233,7 @@ void *client_handler(void *arg) {
         }
         else if (strcasecmp(command, "ALLUSERS") == 0) {
             // Implementation for listing all registered users.
-            // (This could use a query from db.c.)
+            // query from db.c.)
             char *list_buffer = db_get_all_users();
             if (list_buffer) {
             send(newsockfd, list_buffer, strlen(list_buffer), 0);

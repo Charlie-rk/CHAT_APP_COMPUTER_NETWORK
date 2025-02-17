@@ -144,6 +144,7 @@ void db_set_user_offline(const char *user_id) {
     mongoc_collection_destroy(users_coll);
 }
 
+
 bool db_insert_chat(const char *sender_id, const char *recipient_id, const char *message,bool delivered,bool popped) {
     bson_error_t error;
     mongoc_collection_t *chats_coll = mongoc_client_get_collection(mongo_client, "chat", "chats");
@@ -155,8 +156,8 @@ bool db_insert_chat(const char *sender_id, const char *recipient_id, const char 
     BSON_APPEND_DATE_TIME(chat_doc, "timestamp", (int64_t)time(NULL) * 1000);
     BSON_APPEND_UTF8(chat_doc, "message", message);
     BSON_APPEND_BOOL(chat_doc, "delivered", delivered);
-    BSON_APPEND_INT64(chat_doc, "delivery_time", delivered ? now : 0);
-    BSON_APPEND_INT64(chat_doc, "seen_time", 0);
+    BSON_APPEND_INT64(chat_doc, "delivery_time",  now );
+    BSON_APPEND_INT64(chat_doc, "seen_time", delivered ? now : 0);
     BSON_APPEND_BOOL(chat_doc, "popped", popped);
     
     bool ret = mongoc_collection_insert_one(chats_coll, chat_doc, NULL, NULL, &error);
@@ -166,6 +167,10 @@ bool db_insert_chat(const char *sender_id, const char *recipient_id, const char 
     mongoc_collection_destroy(chats_coll);
     return ret;
 }
+
+
+
+
 
 char* db_get_chat_history(const char *user_id, const char *other_id) {
     mongoc_collection_t *chats_coll = mongoc_client_get_collection(mongo_client, "chat", "chats");
@@ -225,7 +230,9 @@ char* db_get_chat_history(const char *user_id, const char *other_id) {
         } else {
             strcpy(seen_str, "-");
         }
-        snprintf(line, sizeof(line), "[%s] %s: %s (Delivered: %s, Seen: %s)\n", time_str, sender, msg, delivered_str, seen_str);
+        snprintf(line, sizeof(line),
+         "[\033[1;36m%s\033[0m] %s: \033[1;32m%s\033[0m (Delivered: \033[1;36m%s\033[0m, Seen: %s)\n",
+         time_str, sender, msg, delivered_str, seen_str);
         if (strlen(history) + strlen(line) + 1 > history_size) {
             history_size *= 2;
             history = realloc(history, history_size);
@@ -241,6 +248,7 @@ char* db_get_chat_history(const char *user_id, const char *other_id) {
     mongoc_collection_destroy(chats_coll);
     return history;
 }
+
 
 
 char* db_get_all_users(void) {
@@ -345,7 +353,13 @@ void deliver_offline_messages(const char *user_id, int sockfd) {
         send(sockfd, offline_msg, strlen(offline_msg), 0);
 
         // Mark this message as popped and update delivery_time.
-        bson_t *update = BCON_NEW("$set", "{", "popped", BCON_BOOL(true), "delivered", BCON_BOOL(true), "delivery_time", BCON_INT64((int64_t) time(NULL) * 1000), "}");
+        int64_t current_time = (int64_t) time(NULL) * 1000;
+         bson_t *update = BCON_NEW("$set", "{", 
+                                   "popped", BCON_BOOL(true), 
+                                   "delivered", BCON_BOOL(true), 
+                                   "delivery_time", BCON_INT64(current_time), 
+                                   "seen_time", BCON_INT64(current_time), 
+                                   "}");
         bson_iter_t id_iter;
         if (bson_iter_init_find(&id_iter, doc, "_id") && BSON_ITER_HOLDS_OID(&id_iter)) {
             const bson_oid_t *oid = bson_iter_oid(&id_iter);
