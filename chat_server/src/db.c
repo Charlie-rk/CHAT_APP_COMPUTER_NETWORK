@@ -18,7 +18,7 @@ static void generate_unique_user_id(const char *username, char *buffer, size_t s
 
 void init_mongo() {
     mongoc_init();
-    const char *uri_string = "mongodb+srv://rustampavri1275:ZEky8BjuetPZXF3B@cluster0.ycoqp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+    const char *uri_string = "mongodb+srv://<name><password>@cluster0.ycoqp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
     mongoc_uri_t *uri = mongoc_uri_new(uri_string);
     mongo_client = mongoc_client_new_from_uri(uri);
     mongoc_uri_destroy(uri);
