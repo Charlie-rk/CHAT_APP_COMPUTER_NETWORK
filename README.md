@@ -2,8 +2,8 @@
 
 ChatApp is a multi-threaded chat application built in C that supports real-time messaging, file transfers, and persistent user management using MongoDB. The project includes both server and client components, with the client featuring a modern terminal-based user interface powered by ncurses.
 
+![Recording 2025-02-18 223420](https://github.com/user-attachments/assets/7f260701-8e22-41f9-af52-bf83504daca0)
 
-![Screenshot from 2025-02-15 17-04-05](https://github.com/user-attachments/assets/9ea7847e-6019-4940-bb35-ffe2a66fd9c0)
 
 
 ## Features
